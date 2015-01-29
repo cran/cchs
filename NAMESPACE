@@ -1,0 +1,4 @@
+export(cchs)
+S3method(print, cchs)
+S3method(summary, cchs)
+importFrom(survival, coxph)

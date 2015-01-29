@@ -1,0 +1,12 @@
+57401a1d0cf80ef8d8f7a571b18a9d60 *DESCRIPTION
+728812e8cdfd21358cf4033b59c166cd *NAMESPACE
+1806a881acdfd0118842c87e0816b741 *R/argProcessingSubroutines.R
+ffdfabef3f54ebd171795b3b3039b5e8 *R/cchs.R
+6b15fdf57c403fd50f386c2ed83c5d45 *R/classRelatedFunctions.R
+cb470b19e07d2af520ffa56fa7d279d9 *R/rowManipulationSubroutines.R
+b0f52f19389a9f19091ca6a8f7cc8ea0 *R/samplingFractionSubroutines.R
+838774d0f0331bd18e2b53017c96dab6 *R/tiedEventTimeSubroutines.R
+734d0c12ebf818b8021ed41233ff11fa *R/utils.R
+59aeb0c0818e9f784a428a372395ede2 *data/cchsData.rda
+7f8fdce1e280a7a41acfcdd33663d974 *man/cchs.Rd
+4ddb49701e276af3ec194db007610c12 *man/cchsData.Rd
