@@ -31,4 +31,18 @@ removeNAsFromVector <- function(x) {
 }
 
 ################################################################################
+# Set the S3 class of an object. "x <- setS3class(x, className)" is the same as 
+# "class(x) <- className", but it works in S as well as R. This is partly based
+# on the last few lines of survival:::summary.coxph and partly based on ?is.R.
+setS3class <- function(x, className) {
+	if (exists("is.R") && is.function(is.R) && is.R()) {
+		# this code is being run in R
+		class(x) <- className 
+	} else { 
+		# this code is being run in S
+		oldClass(x) <- className
+	}  
+	return(x)
+}
+################################################################################
 

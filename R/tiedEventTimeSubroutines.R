@@ -50,12 +50,15 @@ fixTiedEventTimes <- function(timeAtEntry, timeAtExit, isCase, precision) {
 			stop("fixTiedEventTimes failed; precision=", precision, 
 					" is probably too small")
 		} else {	
-			nNonUnique <- sum(eventTimes %in% eventTimes[duplicated(eventTimes)])
-			stop("there are ",nNonUnique," non-unique event-times (not allowed), ",
+			nNonUnique <- 
+					sum(eventTimes %in% eventTimes[duplicated(eventTimes)])
+			stop("there are ", nNonUnique, 
+					" non-unique event-times (not allowed), ",
 					"but precision=NULL so it was not possible to fix them")
 		}
 	}
-	return(list(timeAtEntry=timeAtEntry, timeAtExit=timeAtExit, message=message))
+	return(list(
+			timeAtEntry=timeAtEntry, timeAtExit=timeAtExit, message=message))
 }
 
 ################################################################################
@@ -89,8 +92,8 @@ perturbTiedValues <- function(values, epsilonForTies) {
 		amountsToChangeBy <- epsilonForTies * posAndNegIncrements / denom 
 		
 		#cat("Dealing with duplicated value", v, ": elements=", elements, 
-		#		" amounts=",amountsToChangeBy[1:numberOfElementsToChange], "\n")
-		elements <- sample(elements)  # shuffle (fails if argument has length 1!)
+		#		" amounts=",amountsToChangeBy[1:numberOfElementsToChange],"\n")
+		elements <- sample(elements)  # shuffle (fails if argument length is 1)
 		for (i in 1:numberOfElementsToChange) {
 			row <- elements[i]
 			values[row] <- values[row] + amountsToChangeBy[i]
@@ -101,8 +104,8 @@ perturbTiedValues <- function(values, epsilonForTies) {
 	# Make the message and return that and the values. 
 	if (numberOfChanges > 0) {
 		message <- paste0(numberOfChanges, " of ", length(values), 
-				" discretized event-times were changed by up to ", epsilonForTies, 
-				" to deal\n with ties.")
+				" discretized event-times were changed by up to ", 
+				epsilonForTies, " to deal\n with ties.")
 	} else { 
 		message <- ""
 	}

@@ -6,7 +6,7 @@
 # Subroutine to do the splitting. 
 
 doSplitting <- function(modelMatrixPlus, epsilon, verbose=FALSE) { 
-	# Avoid R CMD check problem (see http://stackoverflow.com/q/9439256/1310503):  
+	# Avoid R CMD check problem (http://stackoverflow.com/q/9439256/1310503):  
 	stratum <- inSubcohort <- timeAtExit <- timeAtEntry <- NULL
 	
 	# Do some checking. 
@@ -15,9 +15,9 @@ doSplitting <- function(modelMatrixPlus, epsilon, verbose=FALSE) {
 		stop("the modelMatrixPlus that is passed to doSplitting has to be a ",
 				"data-frame")
 	if (any(duplicated(mmp$id)))
-		stop("the modelMatrixPlus that is passed to doSplitting has to be an\n",
-				"augmented model matrix in which all rows correspond to ",
-				"different\nrows of the original data") 
+		stop("the modelMatrixPlus that is passed to doSplitting has to be ",
+				"an\naugmented model matrix in which all rows correspond ",
+				"to different\nrows of the original data") 
 	# Check that mmp contains all the required extra variables. 
 	extraVariables <- c("stratum", "isCase", "inSubcohort", "timeAtEntry", 
 			"timeAtExit")
@@ -41,24 +41,28 @@ doSplitting <- function(modelMatrixPlus, epsilon, verbose=FALSE) {
 	names(rowToSplit) <- levels(stratum)
 	# rowToSplit["x"] will be the row to split for non-subcohort cases in 
 	# stratum x
-	if (verbose) cat("######### doSplitting #########\nChoose rows to split:\n")
+	if (verbose) 
+		cat("######### doSplitting #########\nChoose rows to split:\n")
 	for (i in levels(stratum)) {
 		possibleRows <- which(inSubcohort & stratum==i)  
 		# possibleRows is the rows who are in the subcohort and the same stratum
 		if (length(possibleRows) == 0) {  # (this happens if there is no one in 
 			rowToSplit[i] <- NA            # the subcohort and the same stratum)
 		} else if (length(possibleRows) == 1) {  # (see "undesired behaviour" in
-			rowToSplit[i] <- possibleRows         # ?sample)
+			rowToSplit[i] <- possibleRows        # ?sample)
 		} else { 
 			rowToSplit[i] <- sample(possibleRows, size=1)
 		}
-		if (verbose) cat("  Row to split in stratum ", i, ": row ", rowToSplit[i], 
-				" (possibleRows=", paste(possibleRows,collapse=","), ")\n", sep="")
+		if (verbose) 
+			cat("  Row to split in stratum ", i, ": row ", rowToSplit[i], 
+				" (possibleRows=", paste(possibleRows,collapse=","), ")\n", 
+				sep="")
 	}
 	if (verbose) cat("\n")
 	
 	# Decide where each rowToSplit needs to be split. 
-	if (verbose) cat("For each non-subcohort case, work out what split to do:\n")
+	if (verbose) 
+		cat("For each non-subcohort case, work out what split to do:\n")
 	splitTimes <- vector("list", nStrata)  # make empty list
 	names(splitTimes) <- levels(stratum)
 	# splitTimes$str3 will be the times at which row number rowToSplit$str3 
@@ -70,8 +74,8 @@ doSplitting <- function(modelMatrixPlus, epsilon, verbose=FALSE) {
 		eventTime <- timeAtExit[i]
 		if (verbose) cat("  Non-subcohort case in row ", i, " (stratum ", 
 				as.character(thisStratum), "): rowToSplit=", 
-				rowToSplit[thisStratum], " will be split at eventTime=", eventTime, 
-				" (if it is at risk then)\n", sep="")
+				rowToSplit[thisStratum], " will be split at eventTime=", 
+				eventTime, " (if it is at risk then)\n", sep="")
 		# If this stratum's rowToSplit is at risk at eventTime, record that a 
 		# split needs to be made.
 		if (timeAtEntry[rowToSplit[thisStratum]] < eventTime && 
@@ -86,15 +90,15 @@ doSplitting <- function(modelMatrixPlus, epsilon, verbose=FALSE) {
 		sortedSplitTimes <- sort(splitTimes[[i]])
 		originalRow <- rowToSplit[i] 
 		if (verbose) 
-			cat("  Stratum ", i, ": splitting row ", originalRow, 
-					" at times ", paste(sortedSplitTimes,collapse=" "), "\n", sep="")
+			cat("  Stratum ", i, ": splitting row ", originalRow, " at times ", 
+					paste(sortedSplitTimes,collapse=" "), "\n", sep="")
 		for (j in 1:length(sortedSplitTimes)) {
 			newRow <- nrow(mmp) + 1
 			mmp[newRow,] <- mmp[originalRow,]  # create the new row
 			mmp$timeAtEntry[originalRow] <- sortedSplitTimes[j] 
 			mmp$timeAtExit[newRow] <- sortedSplitTimes[j] - epsilon  
-			# The original row now contains the time from split-time onwards, and 
-			# the new row contains the time before the split-time. 
+			# The original row now contains the time from split-time onwards,  
+			# and the new row contains the time before the split-time. 
 			mmp$isCase[newRow] <- FALSE  # the new row does not have an event
 		}
 	}

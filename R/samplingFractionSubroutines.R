@@ -11,7 +11,8 @@ checkSamplingFractions <- function(samplingFractions, cohortStratumSizes,
 	
 	# Check stratum and inSubcohort are the same length, and define some things. 
 	if (length(stratum) != length(inSubcohort))
-		stop("INTERNAL ERROR: stratum and inSubcohort have to be the same length")
+		stop("INTERNAL ERROR: stratum and inSubcohort have to be the same ",
+				"length")
 	if (!is.factor(stratum))
 		stop("INTERNAL ERROR: stratum has to be a factor")
 	if (hasUnusedLevels(stratum))
@@ -23,17 +24,17 @@ checkSamplingFractions <- function(samplingFractions, cohortStratumSizes,
 	
 	# Check that exactly one of the two variables was given, and call it arg.
 	if (!xor(sfGiven, cssGiven)) 
-		stop("exactly one of samplingFractions and cohortStratumSizes must be ", 
-				"supplied") 
+		stop("exactly one of samplingFractions and cohortStratumSizes must ", 
+				"be supplied") 
 	argName <- ifelse(sfGiven, "samplingFractions", "cohortStratumSizes")
 	arg <- get(argName)  # "arg <- ifelse(sfGiven, ..." does not work	
 	
 	# Check that arg is legal. 
-	# If arg has no names, then it has to have length nObservations, and arg is 
-	# "long"; and arg is not allowed to have NAs. 
-	# If arg has names, then these have to include the levels of stratum, and arg
-	# is "short"; and arg is only allowed to have NAs in unused elements, meaning 
-	# ones whose names do not appear in levels(stratum). 
+	# If arg has no names, then it has to have length nObservations, and arg  
+	# is "long"; and arg is not allowed to have NAs. 
+	# If arg has names, then these have to include the levels of stratum, and 
+	# arg is "short"; and arg is only allowed to have NAs in unused elements,  
+	# meaning ones whose names do not appear in levels(stratum). 
 	
 	# First, make an error message to use when arg has an illegal form. 
 	if (is.null(names(arg))) {
@@ -45,10 +46,10 @@ checkSamplingFractions <- function(samplingFractions, cohortStratumSizes,
 	levelsStratumText <- paste(paste(levels(stratum)[1:min(6,nStrata)], 
 					collapse=" "), if(nStrata>6) "...")
 	illegalArgumentFormMessage <- paste0(argName, " must either have names ",
-			"that correspond to the levels of stratum\nand are all distinct, or ",
-			"have no names and length equal to the number of observations \n",
-			"names(", argName, ")=", namesArgText, "\nlevels(stratum)=", 
-			levelsStratumText)
+			"that correspond to the levels of stratum\nand are all distinct, ",
+			"or have no names and length equal to the number of ",
+			"observations \nnames(", argName, ")=", namesArgText, 
+			"\nlevels(stratum)=", levelsStratumText)
 	
 	# Now check arg in the two cases where it has no names and it has names. 
 	# Check the length, names (if any), and NAs. 
@@ -61,12 +62,13 @@ checkSamplingFractions <- function(samplingFractions, cohortStratumSizes,
 		argIsShort <- FALSE
 	} else {
 		# arg has names (NAs in arg are only allowed in unused elements)
-		if (!all(levels(stratum) %in% names(arg)) || any(duplicated(names(arg)))) 
+		if (!all(levels(stratum) %in% names(arg)) || 
+				any(duplicated(names(arg)))) 
 			stop(illegalArgumentFormMessage)
 		illegalNaNames <- intersect(names(arg)[is.na(arg)], levels(stratum))
 		if (length(illegalNaNames) > 0) 
-			stop("elements of ", argName, " whose names match values of stratum ",
-					"must not be NA\nIllegal elements: ", 
+			stop("elements of ", argName, " whose names match values of ",
+					"stratum must not be NA\nIllegal elements: ", 
 					paste(illegalNaNames, collapse=" "))
 		if (length(arg) > nStrata) 
 			cat("These elements of", argName, "will not be used:", 
@@ -87,7 +89,8 @@ checkSamplingFractions <- function(samplingFractions, cohortStratumSizes,
 	# just arg[rowsToKeep].)
 	if (sfGiven) {
 		if (any(arg <= 0 | arg > 1, na.rm=TRUE))
-			stop(argName, " must all be greater than 0 and less than or equal to 1")
+			stop(argName, " must all be greater than 0 and less than or ",
+					"equal to 1")
 	} else {
 		if (any(arg %% 1 != 0 | arg <= 0, na.rm=TRUE))
 			stop(argName, " must all be positive integers")
@@ -102,11 +105,11 @@ checkSamplingFractions <- function(samplingFractions, cohortStratumSizes,
 }
 
 ################################################################################
-# Get samplingFractions as a "long" vector of length nrow(data), so that it can 
-# ultimately be used in the offset term in the call to coxph.
+# Get samplingFractions as a "long" vector of length nrow(data), so that it  
+# can ultimately be used in the offset term in the call to coxph.
 
-getSamplingFractions <- function(samplingFractions, cohortStratumSizes, stratum, 
-		inSubcohort, samplingFractionInfo, verbose=FALSE) {
+getSamplingFractions <- function(samplingFractions, cohortStratumSizes, 
+		stratum, inSubcohort, samplingFractionInfo, verbose=FALSE) {
 	
 	# Check that stratum has no unused levels. 
 	if (hasUnusedLevels(stratum))
@@ -123,7 +126,7 @@ getSamplingFractions <- function(samplingFractions, cohortStratumSizes, stratum,
 	
 	if (sfGiven) {  # samplingFractions was given
 		if (argIsShort) {
-			return( samplingFractions[match(stratum, names(samplingFractions))] )
+			return(samplingFractions[match(stratum, names(samplingFractions))])
 		} else {
 			return(samplingFractions)
 		}
@@ -142,7 +145,8 @@ getSamplingFractions <- function(samplingFractions, cohortStratumSizes, stratum,
 			# Check that the match in the previous line worked correctly:
 			if (!identical(names(subcohortStratumSizes), 
 					names(cohortStratumSizes)))
-				stop("INTERNAL ERROR: code in getSamplingFractions must be wrong") 
+				stop("INTERNAL ERROR: code in getSamplingFractions must ",
+						"be wrong") 
 		} else {  # make it short  
 			cohortStratumSizes <- cohortStratumSizes[match(levels(stratum), 
 					stratum)]
@@ -178,9 +182,9 @@ checkCohortStratumSizes <- function(samplingFractions, cohortStratumSizes,
 	# Check samplingFractions was supplied and has the same length as stratum. 
 	if (missing(samplingFractions) || 
 			length(samplingFractions) != length(stratum)) 
-		stop("INTERNAL ERROR: checkCohortStratumSizes is intended to be called ",
-				"after getSamplingFractions, so that samplingFractions exists and ",
-				"is \"long\"")
+		stop("INTERNAL ERROR: checkCohortStratumSizes is intended to be ",
+				"called after getSamplingFractions, so that ",
+				"samplingFractions exists and is \"long\"")
 	
 	# Check stratum and inSubcohort have the same length. 
 	if (length(stratum) != length(inSubcohort))
@@ -190,8 +194,8 @@ checkCohortStratumSizes <- function(samplingFractions, cohortStratumSizes,
 	varNames <- "samplingFractions"
 	if (!missing(cohortStratumSizes)) {
 		varNames <- c(varNames, "cohortStratumSizes")
-		if (!is.null(names(cohortStratumSizes))) # it's "short", so make it "long"
-			#if (length(cohortStratumSizes) == nlevels(stratum))  # (alternative)
+		if (!is.null(names(cohortStratumSizes))) # it's "short"; make it "long"
+			#if (length(cohortStratumSizes) == nlevels(stratum)) #(alternative)
 			cohortStratumSizes <- 
 					cohortStratumSizes[match(stratum, levels(stratum))]
 	}
@@ -199,7 +203,7 @@ checkCohortStratumSizes <- function(samplingFractions, cohortStratumSizes,
 		for (stra in levels(stratum))
 			if (!allEqual(removeNAsFromVector(get(varName)[stratum==stra])))
 				# removeNAsFromVector is needed in case any stratum=NA
-				stop(paste(varName, "is not constant within stratum", stra))
+				stop(varName, " is not constant within stratum ", stra)
 	
 	# Check that stratum has no unused levels. 
 	if (hasUnusedLevels(stratum))
@@ -221,8 +225,8 @@ checkCohortStratumSizes <- function(samplingFractions, cohortStratumSizes,
 		
 		# Check names of vectors. 
 		if (!identical(names(samplingFractions), names(subcohortStratumSizes)))
-			stop("INTERNAL ERROR: names(samplingFractions) should be the same as ",
-					"names(subcohortStratumSizes)")
+			stop("INTERNAL ERROR: names(samplingFractions) should be the ",
+					"same as names(subcohortStratumSizes)")
 		
 		# Calculate cohortStratumSizes. 
 		cohortStratumSizes <- round(subcohortStratumSizes / samplingFractions)
@@ -246,7 +250,7 @@ checkCohortStratumSizes <- function(samplingFractions, cohortStratumSizes,
 		cohortStratumSize <- cohortStratumSizes[stra]
 		rowsInStratum <- sum(stratum==stra, na.rm=TRUE)
 		if (cohortStratumSize < rowsInStratum) 
-			stop("cohortStratumSizes[", stra, "]=", cohortStratumSize, 
+			stop("cohortStratumSizes[\"", stra, "\"]=", cohortStratumSize, 
 					" but stratum ", stra, " has size ", rowsInStratum, 
 					" in the case-cohort data")
 	}
@@ -265,9 +269,10 @@ checkCohortStratumSizes <- function(samplingFractions, cohortStratumSizes,
 adjustSamplingFractions <- function(samplingFractions, stratum, inSubcohort, 
 		rowsToKeep, verbose=FALSE) {
 	# Check the arguments. 
-	if (!allEqual(sapply(list(samplingFractions, stratum, inSubcohort), length)))
-		stop("INTERNAL ERROR: samplingFractions, stratum, and rowsToKeep have ",
-				"to all be the same length")
+	if (!allEqual(
+			sapply(list(samplingFractions, stratum, inSubcohort), length)))
+		stop("INTERNAL ERROR: samplingFractions, stratum, and rowsToKeep ",
+				"have to all be the same length")
 	if (max(rowsToKeep) > length(samplingFractions))
 		stop("INTERNAL ERROR: rowsToKeep is inconsistent with other vectors")
 	
@@ -277,15 +282,16 @@ adjustSamplingFractions <- function(samplingFractions, stratum, inSubcohort,
 	# For each stratum, and for before and after the NA-containing rows are  
 	# removed, find subcohortStratumSizes as a "short" vector. 
 	subcohortStratumSizesBefore <- sapply(X=levels(stratum), 
-			FUN=function(x) sum(inSubcohort[stratum==x], na.rm=TRUE))
+		FUN=function(x) sum(inSubcohort[stratum==x], na.rm=TRUE))
 	subcohortStratumSizesAfter <- sapply(X=levels(stratum), 
-			FUN=function(x) sum(inSubcohort[rowsToKeep][stratum[rowsToKeep]==x]))
+		FUN=function(x) sum(inSubcohort[rowsToKeep][stratum[rowsToKeep]==x]))
 	# (The "sum()" in the previous line looks clumsy, but this is unavoidable.)
 	if (any(is.na(subcohortStratumSizesAfter)))
 		stop("INTERNAL ERROR: rowsToKeep contains rows with stratum=NA")
 	
 	# Similarly find cohortStratumSizesBefore and cohortStratumSizesAfter.  
-	samplingFractionsBefore <- samplingFractions[match(levels(stratum), stratum)]
+	samplingFractionsBefore <- 
+			samplingFractions[match(levels(stratum), stratum)]
 	cohortStratumSizesBefore <- 
 			subcohortStratumSizesBefore / samplingFractionsBefore
 	numberToDropInEachStratum <- c(table(stratum) - table(stratum[rowsToKeep]))
@@ -304,14 +310,14 @@ adjustSamplingFractions <- function(samplingFractions, stratum, inSubcohort,
 				"subcohortStratumSizesAfter", "cohortStratumSizesAfter", 
 				"samplingFractionsBefore", "samplingFractionsAfter")) { 
 			cat("## ", varName, ":\n", sep="")
-			show(get(varName)) 
+			print(get(varName)) 
 		}
 		cat("\n")
 	}
 	
 	# Return samplingFractionsAfter as a "long" vector with no names. 
-	result <- 
-			samplingFractionsAfter[match(stratum, names(samplingFractionsAfter))]
+	result <- samplingFractionsAfter[
+			match(stratum, names(samplingFractionsAfter))]
 	names(result) <- NULL
 	return(result)
 }

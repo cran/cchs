@@ -21,7 +21,8 @@ checkCchsArgumentsNotMissing <- function(formula, inSubcohort, stratum) {
 	#f()
 }
 
-checkCchsArguments <- function(formula, data, inSubcohort, stratum) {
+checkCchsArguments <- function(formula, data, inSubcohort, stratum, 
+		confidenceLevel) {
 	# Check formula is a formula. 
 	if (class(formula) != "formula")
 		stop("formula has to be an object of class formula")
@@ -34,10 +35,10 @@ checkCchsArguments <- function(formula, data, inSubcohort, stratum) {
 	if (is.data.frame(data)) {
 		for (varName in c("inSubcohort","stratum"))
 			if (length(get(varName)) != nrow(data))
-				stop(paste(varName, "has to have length nrow(data)"))
+				stop(varName, " has to have length nrow(data)")
 	} else {
 		if (length(inSubcohort) != length(stratum))
-			stop(paste("inSubcohort and stratum have to be the same length"))
+			stop("inSubcohort and stratum have to be the same length")
 	}
 		
 	# Check inSubcohort. 
@@ -47,6 +48,11 @@ checkCchsArguments <- function(formula, data, inSubcohort, stratum) {
 	# Check stratum. 
 	if (length(unique(stratum)) == 1)
 		stop("only one stratum; use cch with method=\"Prentice\" instead")
+	
+	# Check confidenceLevel. 
+	if (!is.numeric(confidenceLevel) || length(confidenceLevel) != 1 || 
+			confidenceLevel < 0 || confidenceLevel > 1)
+		stop("confidenceLevel must be a single numeric in the range [0,1]")
 }
 
 ################################################################################
@@ -72,11 +78,12 @@ getExtraVariables <- function(data, originalCall, samplingFractions,
 	result <- list()
 	if (is.data.frame(data)) {
 		
-		# Example of what the following loop does, with varName="stratum": if the  
-		# user typed stratum=xyz, then set stratum to be data$xyz, if that exists.
+		# Example of what the following loop does, with varName="stratum": if 
+		# the user typed stratum=xyz, then set stratum to be data$xyz, if 
+		# that exists.
 		for (varName in varNames) {
 			value <- originalCall[[varName]]  # in the example, value=xyz
-			valueAsString <- deparse(value)   # in the example, valueAsString="xyz"
+			valueAsString <- deparse(value)   # in the ex., valueAsString="xyz"
 			if (verbose) cat("   ", varName, ": ", sep="")
 			if (is.name(value)) {
 				# value is a "name" (the name of a variable, not an expression)
@@ -84,7 +91,7 @@ getExtraVariables <- function(data, originalCall, samplingFractions,
 					if (verbose) 
 						cat("getting", valueAsString, "from the data-frame\n")
 					result[[varName]] <- data[[valueAsString]] 
-					# in the example, the above line does result$stratum <- data$xyz
+					# in the ex., previous line does result$stratum <- data$xyz
 				} else {
 					if (verbose) 
 						cat(valueAsString," is not in the data-frame\n",sep="")
@@ -111,9 +118,9 @@ getExtraVariables <- function(data, originalCall, samplingFractions,
 # cursory checks, not thorough. 
 
 getCoxphControl <- function(coxphControl, ...) {
-	# Avoid R CMD check problem (see http://stackoverflow.com/q/9439256/1310503):  
+	# Avoid R CMD check problem (http://stackoverflow.com/q/9439256/1310503):  
 	coxph.control <- survival::coxph.control
-	# Alternative ways that fail: coxph.control <- NULL causes errors below
+	# Alternative ways that fail: coxph.control <- NULL causes errors below;
 	# utils::globalVariables(coxph.control) fails R CMD check
 	
 	# Check that any extra arguments are legal arguments for coxphControl. 
@@ -133,13 +140,13 @@ getCoxphControl <- function(coxphControl, ...) {
 		tryCatch(
 			coxphControl <- coxph.control(...), 
 			error=function(e) stop(e$message, 
-			"\n[This error was thrown by coxph.control and is due to one or more ",
-			"illegal\nvalues of extra arguments (...), which cchs passes to ",
-			"coxph.control.]"),
+			"\n[This error was thrown by coxph.control and is due to one ",
+			"or more illegal\nvalues of extra arguments (...), which cchs ",
+			"passes to coxph.control.]"),
 			warning=function(e) stop(e$message, 
-			"\n[This error is caused by a warning from coxph.control and is due ",
-			"to one or more\nillegal values of extra arguments (...), which cchs ",
-			"passes to coxph.control.]")
+			"\n[This error is caused by a warning from coxph.control and ",
+			"is due to one or more\nillegal values of extra arguments (...), ",
+			"which cchs passes to coxph.control.]")
 		)
 		
 	} else {
@@ -153,9 +160,9 @@ getCoxphControl <- function(coxphControl, ...) {
 			error=function(e) stop(e$message, 
 			"\n[This error was thrown when evaluating coxphControl and is ",
 			"probably\ndue to use of coxph.control with illegal arguments.]"), 
-			warning=function(e) stop(e$message, "\n[This error is caused by a ",
-			"warning when evaluating coxphControl and\nis probably due to use of",
-			"coxph.control with illegal arguments.]")
+			warning=function(e) stop(e$message, "\n[This error is caused by ",
+			"a warning when evaluating coxphControl and\nis probably due ",
+			"to use of coxph.control with illegal arguments.]")
 		)
 	}
 	

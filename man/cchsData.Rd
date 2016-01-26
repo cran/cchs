@@ -17,17 +17,17 @@
     \code{isCase} \tab Indicator for whether this participant had a relapse or not. \cr     
     \code{time} \tab Number of days from diagnosis of Wilms tumor to relapse or censoring. \cr
     \code{ageAtDiagnosis} \tab Age in years at diagnosis of Wilms tumor. \cr
+    \code{inSubcohort} \tab Indicator for whether this participant is in the subcohort or not. \cr     
     \code{sampFrac} \tab The sampling fraction for the stratum that contains this participant. 
   }
 }
-
 \details{
-	The \code{\link{nwtco}} data is from two clinical trials but can be regarded as cohort data. \code{cchsData} can be created from it by running the code in the Source section below, which is partly based on the Examples from the \code{\link{cch}} help page. Two strata are used for the subcohort-selection, corresponding to the two values of \code{localHistol}. The sampling fraction is 5\% for the stratum defined by \code{localHistol="favorable"} and 20\% for the stratum defined by \code{localHistol="unfavorable"}. After the subcohort is selected, the sampling fractions are recalculated using the exact integer numbers of participants in the subcohort and the full cohort. 
+	The \code{\link{nwtco}} data is from two clinical trials but can be regarded as cohort data. \code{cchsData} can be created from it by running the code in the Source section below, which is partly based on the Examples section of the \code{\link{cch}} help page. Two strata are used for the subcohort-selection, corresponding to the two values of \code{localHistol}. The sampling fraction is 5\% for the stratum defined by \code{localHistol="favorable"} and 20\% for the stratum defined by \code{localHistol="unfavorable"}. After the subcohort is selected, the sampling fractions are recalculated using the exact integer numbers of participants in the subcohort and the full cohort. 
 }
 
 % NB the following code is identified and extracted using the "Start of code ..." and "End of code ..." lines, and then run to create cchsData. 
 \section{Source}{\preformatted{
-% Start of code to make cchsData.
+% Start of code to make dataset.
 # Starting with nwtco, rename variables, convert some to factors, drop  
 # in.subcohort (which is used elsewhere for a different simulated dataset), etc. 
 library(survival, quietly=TRUE)
@@ -69,9 +69,8 @@ cchsData <- cchsData[cchsData$isCase | cchsData$inSubcohort,]
 # Put the sampling fraction in each row of the data-frame. 
 cchsData$sampFrac <- 
       samplingFractions[match(cchsData$localHistol, names(samplingFractions))]
-% End of code to make cchsData.
-}
-}
+% End of code to make dataset.
+}}
 
 \keyword{datasets}
 
