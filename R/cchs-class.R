@@ -38,3 +38,28 @@ summary.cchs <- function(object, ...) {
 }
 
 ################################################################################
+# Other S3 generic functions. 
+
+# coef already works.
+
+vcov.cchs <- function(object, ...) {
+	object$var
+}
+# confint now works.
+
+logLik.cchs <- function(object, ...) {
+	result <- object$loglik[2]
+	attr(result, "df") <- sum(!is.na(coefficients(object)))
+	attr(result, "nobs") <- object$nevent  # see note below
+	class(result) <- "logLik"
+	result
+}
+# AIC and BIC now work.
+
+# Note on the nobs attribute of the logLik object: this is set to object$nevent 
+# rather than object$n because this is preferable when the logLik object is 
+# used by BIC. This the same as in survival:::logLik.coxph. 
+# See https://www.stat.washington.edu/research/reports/1999/tr349.pdf 
+# and https://cran.r-project.org/web/packages/coxme/vignettes/coxme.pdf. 
+
+################################################################################

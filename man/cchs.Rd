@@ -66,6 +66,8 @@
 
 	\item{var}{ The variance matrix of the coefficients. }
 
+	\item{loglik}{ A vector of two elements: the first is the log-likelihood with the initial values of the coefficients that were used in the iteration to find the maximum likelihood, and the second is the maximized log-likelihood---that is, the log-likelihood with the final values of the coefficients. (Strictly speaking these should all say ``pseudo-likelihood'' instead of ``likelihood''.) }
+
 	\item{iter}{ The number of iterations used by \code{\link{coxph}}. }
 
 	\item{n}{ The number of observations (that is, rows), that were used in the call to \code{coxph}. }

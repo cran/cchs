@@ -40,10 +40,6 @@
 # - stop("INTERNAL ERROR: ...") means something is wrong with the code, not  
 #   with what the user did
 
-# been renamed. I think these are here because I accidentally deleted 
-# borganIII folder and then recreated it by copying from C:\MyDocs_backupOnC, 
-# and that contains excess files due to having been created using xcopy. 
-
 ################################################################################
 # Main function to calculate Borgan's Estimator III. 
 
@@ -426,7 +422,7 @@ cchs <- function(formula, data=sys.parent(), inSubcohort, stratum,
 	result$call <- originalCall
 	result$n <- n 
 	result$nEachStatus <- nEachStatus
-	result$nevent <- n - result$nEachStatus["subcohortNoncases"] 
+	result$nevent <- n - unname(result$nEachStatus["subcohortNoncases"]) 
 	result$nStrata <- nlevels(stratum)  # (NB empty strata have been dropped)
 	
 	# Make result$message, which is about rows that are dropped because of NAs 
@@ -444,7 +440,7 @@ cchs <- function(formula, data=sys.parent(), inSubcohort, stratum,
 	
 	# If !keepAllCoxphElements, then drop the appropriate elements from result. 
 	varsToKeep <- c("coefficients","var","iter","n","nevent","nStrata","call",
-			"coeffsTable","nEachStatus","message","confidenceLevel")
+			"coeffsTable","nEachStatus","message","confidenceLevel","loglik")
 	if (!keepAllCoxphElements) 
 		for (varName in names(result))
 			if (!(varName %in% varsToKeep))

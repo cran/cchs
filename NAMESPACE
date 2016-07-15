@@ -1,5 +1,7 @@
 export(cchs)
 S3method(print, cchs)
 S3method(summary, cchs)
+S3method(vcov, cchs)
+S3method(logLik, cchs)
 importFrom(survival, coxph)
-importFrom(stats, aggregate, model.frame, model.matrix, model.response, na.omit, na.pass, pchisq, qnorm, residuals, terms, var)
+importFrom(stats, aggregate, model.frame, model.matrix, model.response, na.omit, na.pass, pchisq, qnorm, residuals, terms, var, coefficients)
