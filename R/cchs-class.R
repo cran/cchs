@@ -18,8 +18,8 @@ print.cchs <- function(x, ...) {
 			"\n")
 	if (x$message != "") cat(x$message, "\n") 
 	cat("Number of strata for subcohort-selection:", x$nStrata, "\n")
-	confidenceLevel <- ifelse("confidenceLevel" %in% names(x), 
-			x$confidenceLevel, 0.95)
+	confidenceLevel <- { if ("confidenceLevel" %in% names(x))  
+			x$confidenceLevel else 0.95 }
 	cat("Coefficients (HR = hazard ratio, CI = ", confidenceLevel * 100, 
 			"% confidence interval, SE = standard error):\n", sep="")
 	print(x$coeffsTable)

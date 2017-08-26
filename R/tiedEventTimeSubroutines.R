@@ -1,5 +1,5 @@
 ################################################################################
-# Two functions for checking and fixing tied event-times. 
+# Two functions for checking and adjusting tied event-times. 
 
 ################################################################################
 # Check whether there are tied event-times, and if there are and 
@@ -7,9 +7,9 @@
 # were recorded to the nearest day but are stored as years. If precision!=NULL 
 # then also correct the times, by rounding them to the nearest day or whatever.  
 
-fixTiedEventTimes <- function(timeAtEntry, timeAtExit, isCase, precision) {
+adjustTiedEventTimes <- function(timeAtEntry, timeAtExit, isCase, precision) {
 	
-	# If precision is not null, and there are tied event-times, then fix them.
+	# If precision is not null, and there are tied event-times, then adjust them.
 	if (!is.null(precision)) {
 		
 		# Check that timeAtEntry/Exit are recorded to the nearest "precision". 
@@ -43,18 +43,18 @@ fixTiedEventTimes <- function(timeAtEntry, timeAtExit, isCase, precision) {
 		message <- ""
 	}
 	
-	# Now check whether there are any duplicated event-times. 
+	# Now check whether there are still any duplicated event-times. 
 	eventTimes <- timeAtExit[isCase]
 	if (any(duplicated(eventTimes))) {  # (or anyDuplicated)
 		if (!is.null(precision)) {
-			stop("fixTiedEventTimes failed; precision=", precision, 
+			stop("adjustTiedEventTimes failed; precision=", precision, 
 					" is probably too small")
 		} else {	
 			nNonUnique <- 
 					sum(eventTimes %in% eventTimes[duplicated(eventTimes)])
 			stop("there are ", nNonUnique, 
 					" non-unique event-times (not allowed), ",
-					"but precision=NULL so it was not possible to fix them")
+					"but precision=NULL so it was not possible to adjust them")
 		}
 	}
 	return(list(
@@ -70,7 +70,7 @@ fixTiedEventTimes <- function(timeAtEntry, timeAtExit, isCase, precision) {
 
 # NB perturbTiedValues assumes that the values can be compared for equality 
 # correctly, using "unique" and "==", even if they are floating-point numbers. 
-# If this is not the case, fix them so that they can or change 
+# If this is not the case, adjust them so that they can or change 
 # perturbTiedValues to use match(values, unique(values)).  
 
 perturbTiedValues <- function(values, epsilonForTies) {

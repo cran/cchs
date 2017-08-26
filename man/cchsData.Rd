@@ -22,7 +22,13 @@
   }
 }
 \details{
-	The \code{\link{nwtco}} data is from two clinical trials but can be regarded as cohort data. \code{cchsData} can be created from it by running the code in the Source section below, which is partly based on the Examples section of the \code{\link{cch}} help page. Two strata are used for the subcohort-selection, corresponding to the two values of \code{localHistol}. The sampling fraction is 5\% for the stratum defined by \code{localHistol="favorable"} and 20\% for the stratum defined by \code{localHistol="unfavorable"}. After the subcohort is selected, the sampling fractions are recalculated using the exact integer numbers of participants in the subcohort and the full cohort. 
+	The \code{\link{nwtco}} data is from two clinical trials but can be regarded as cohort data. \code{cchsData} can be created from it by running the code in the Source section below, which is partly based on the Examples section of the \code{\link{cch}} documentation. 
+	
+	Two strata are used for the subcohort-selection, corresponding to the two values of \code{localHistol}. The sampling fraction is 5\% for the stratum defined by \code{localHistol="favorable"} and 20\% for the stratum defined by \code{localHistol="unfavorable"}. After the subcohort is selected, the sampling fractions are recalculated using the exact integer numbers of participants in the subcohort and the full cohort, and then stored in the data-frame.
+	
+	As an alternative to the sampling fractions, the stratum sizes in the full cohort could be used. A suitable value for the \code{cohortStratumSizes} argument to \code{\link{cchs}} would be \code{c(favorable=3622,} \code{unfavorable=406)}. This can be worked out by entering \code{table(nwtco$instit, useNA="always")} and noting that for \code{nwtco$instit} and \code{nwtco$histol}, a value of \code{1} means ``favorable histology result'' and \code{2} means ``unfavorable''---this is not stated in the \code{\link{nwtco}} documentation but can be deduced from the line in the \code{\link{cch}} examples that contains \code{labels=c("FH","UH")}, or by comparing the output of the \code{table} command with the numbers in Table 1 of Breslow & Chatterjee (1999).
+	
+	For information about the two clinical trials, NWTS-3 and NWTS-4, see D'Angio et al. (1989) and Green et al. (1998) respectively, or the \href{http://www.nwtsg.org/}{National Wilms Tumor Study website}. 
 }
 
 % NB the following code is identified and extracted using the "Start of code ..." and "End of code ..." lines, and then run to create cchsData. 
@@ -71,6 +77,14 @@ cchsData$sampFrac <-
       samplingFractions[match(cchsData$localHistol, names(samplingFractions))]
 % End of code to make dataset.
 }}
+
+\references{
+	Breslow, N.E., Chatterjee, N. (1999). Design and analysis of two-phase studies with binary outcome applied to Wilms tumour prognosis. \emph{Journal of the Royal Statistical Society: Series C (Applied Statistics)} \bold{48} (4), 457--468. \href{http://onlinelibrary.wiley.com/doi/10.1111/1467-9876.00165/abstract}{link} 
+	
+	D'Angio, G.J., Breslow, N., Beckwith, J.B., Evans, A., Baum, E., Delorimier, A., Fernbach, D., Hrabovsky, E., Jones, B., Kelalis, P., Othersen, H.B., Tefft, M., Thomas, P.R.M. (1989). Treatment of Wilms' tumor: Results of the third national Wilms' tumor study. \emph{Cancer} \bold{64} (2), 349--360. \href{http://dx.doi.org/10.1002/1097-0142(19890715)64:2<349::AID-CNCR2820640202>3.0.CO;2-Q}{link} 
+	
+	Green, D.M., Breslow, N.E., Beckwith, J.B., Finklestein, J.Z., Grundy, P.E., Thomas, P.R., Kim, T., Shochat, S.J., Haase, G.M., Ritchey, M.L., Kelalis, P.P., D'Angio, G.J. (1998). Comparison between single-dose and divided-dose administration of dactinomycin and doxorubicin for patients with Wilms' tumor: a report from the National Wilms' Tumor Study Group. \emph{Journal of Clinical Oncology} \bold{16} (1), 237--245. \href{https://doi.org/10.1200/JCO.1998.16.1.237}{link} 
+}
 
 \keyword{datasets}
 

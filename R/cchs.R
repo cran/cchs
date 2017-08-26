@@ -14,7 +14,7 @@
 #      print.cchs
 #      summary.cchs
 #   tiedEventTimeSubroutines.R
-#      fixTiedEventTimes
+#      adjustTiedEventTimes
 #      perturbTiedValues
 #   rowManipulationSubroutines.R
 #      doSplitting
@@ -32,19 +32,12 @@
 #      removeNAsFromVector
 #      setS3class
 
-# R style:
-# - boolean variables (e.g. isCase, inSubcohort) should be logicals (FALSE/
-#   TRUE), not 0/1.  
-# - to get a column called b from a data-frame called a, use a$b instead of 
-#   a[["b"]], and use $ or [[ in preference to a[,b] 
-# - stop("INTERNAL ERROR: ...") means something is wrong with the code, not  
-#   with what the user did
-
 ################################################################################
 # Main function to calculate Borgan's Estimator III. 
 
 cchs <- function(formula, data=sys.parent(), inSubcohort, stratum, 
 			samplingFractions, cohortStratumSizes, precision=NULL, 
+			returnAdjustedTimes=FALSE,
 			swap=TRUE, dropNeverAtRiskRows=TRUE, dropSubcohEventsDfbeta=FALSE, 
 			adjustSampFracIfAnyNAs=FALSE, keepAllCoxphElements=FALSE, 
 			confidenceLevel=0.95, verbose=FALSE, annotateErrors=TRUE, 
@@ -109,12 +102,12 @@ cchs <- function(formula, data=sys.parent(), inSubcohort, stratum,
 	
 	# Create rowsToKeep, nRowsToKeep, etc. This has to be done before 
 	# adjustSamplingFractions. 
-	n <- length(inSubcohort)
-	rowsToKeep <- setdiff(1:n, rowsToDrop)
+	nBeforeDroppingRows <- length(inSubcohort)
+	rowsToKeep <- setdiff(1:nBeforeDroppingRows, rowsToDrop)
 	nRowsToDrop <- length(rowsToDrop)
-	droppedRowsMessage <- ifelse(nRowsToDrop==0, "", 
-			paste0(nRowsToDrop, " observation", ifelse(nRowsToDrop==1, 
-			" was", "s were"), " dropped because of NAs."))
+	droppedRowsMessage <- { if (nRowsToDrop==0) "" else  
+			paste0(nRowsToDrop, " observation", { if (nRowsToDrop==1) 
+			" was" else "s were" }, " dropped because of NAs.") }
 	
 	# Make stratum a factor. 
 	if (!is.factor(stratum)) {
@@ -162,9 +155,30 @@ cchs <- function(formula, data=sys.parent(), inSubcohort, stratum,
 				stratum, inSubcohort, rowsToKeep, verbose)  
 	
 	############################################################################
-	# Remake modelFrame, which contains the response and the model matrix, and 
-	# drop the NA-containing rows from it. 
+	# Remake modelFrame, which contains the response and the model matrix. 
 	modelFrame <- model.frame(formula, data, na.action=na.pass)
+	
+	# Get the Surv object, check it, and extract allExitTimes. This has to be 
+	# done here because all exit-times are needed for adjustedExitTimes. 
+	# This will be done again below, after modelFrame is restricted to contain
+	# only rowsToKeep, but it should be fast so this is OK. 
+	survObject <- model.response(modelFrame)
+	if (!inherits(survObject, "Surv")) 
+		stop("the response has to be a Surv object")
+	censoringType <- attr(survObject, "type")
+	if (censoringType == "right") {
+		if (!identical(colnames(survObject), c("time", "status")))
+			stop("INTERNAL ERROR: unable to process Surv object")
+		allExitTimes <- survObject[,"time"]  # survObject$time does not work
+	} else if (censoringType == "counting") {
+		if (!identical(colnames(survObject), c("start", "stop", "status")))
+			stop("INTERNAL ERROR: unable to process Surv object")
+		allExitTimes <- survObject[,"stop"]
+	} else {
+		stop("censoring type \"", censoringType, "\" is not allowed")
+	}
+	
+	# Drop the NA-containing rows from modelFrame.
 	modelFrame <- modelFrame[rowsToKeep,]
 	# The previous line drops the appropriate rows from all attributes of 
 	# modelFrame, so the lines with model.matrix and model.response will work.
@@ -203,24 +217,14 @@ cchs <- function(formula, data=sys.parent(), inSubcohort, stratum,
 	# Get the Surv object and from that get entry-time, exit-time, and event/
 	# censoring variable. (Surv coerces the event/censoring variable to 0/1.) 
 	survObject <- model.response(modelFrame)
-	if (!inherits(survObject, "Surv")) 
-		stop("the response has to be a Surv object")
-	censoringType <- attr(survObject, "type")
-	if (censoringType != "right" && censoringType != "counting")
-		stop("censoring type \"", censoringType, "\" is not allowed")
 	if (censoringType == "right") {
-		if (!identical(colnames(survObject), c("time", "status")))
-			stop("INTERNAL ERROR: unable to process Surv object")
 		timeAtEntry <- rep(0, nrow(survObject))
 		timeAtExit <- survObject[,"time"]  # survObject$time does not work
-		isCase <- survObject[,"status"]
 	} else {
-		if (!identical(colnames(survObject), c("start", "stop", "status")))
-			stop("INTERNAL ERROR: unable to process Surv object")
 		timeAtEntry <- survObject[,"start"]
 		timeAtExit <- survObject[,"stop"]
-		isCase <- survObject[,"status"]
 	}
+	isCase <- survObject[,"status"]
 	# Note on Surv types: "counting" is intended for the scenario where each 
 	# patient has multiple rows, one for each time-interval. But it is also 
 	# suitable for the scenario where each patient has a non-zero entry-time as 
@@ -233,9 +237,14 @@ cchs <- function(formula, data=sys.parent(), inSubcohort, stratum,
 	# Convert isCase to logical and check there are no non-subcohort non-cases. 
 	isCase <- as.logical(isCase) 
 	isNonsubcohortNoncase <- !inSubcohort & !isCase
-	if (any(isNonsubcohortNoncase)) 
-		stop("there are ", sum(isNonsubcohortNoncase), 
-				" non-subcohort non-cases")
+	if (any(isNonsubcohortNoncase)) {
+		nNonsubNoncase <- sum(isNonsubcohortNoncase)
+		if (nNonsubNoncase == 1) {
+			stop("there is 1 non-subcohort non-case")
+		} else {
+			stop("there are ", nNonsubNoncase, " non-subcohort non-cases")
+		}
+	} 
 
 	# Store numbers of cases etc., which will be put in the final result object. 
 	n <- nrow(modelMatrix)
@@ -247,10 +256,11 @@ cchs <- function(formula, data=sys.parent(), inSubcohort, stratum,
 	
 	############################################################################
 	# Deal with tied event-times (and check all times using precision).
-	fixedTimes <- fixTiedEventTimes(timeAtEntry, timeAtExit, isCase, precision)
-	timeAtEntry <- fixedTimes$timeAtEntry
-	timeAtExit <- fixedTimes$timeAtExit
-	tiedTimesMessage <- fixedTimes$message 
+	adjustedEntryAndExitTimes <- 
+			adjustTiedEventTimes(timeAtEntry, timeAtExit, isCase, precision)
+	timeAtEntry <- adjustedEntryAndExitTimes$timeAtEntry
+	timeAtExit <- adjustedEntryAndExitTimes$timeAtExit
+	tiedTimesMessage <- adjustedEntryAndExitTimes$message 
 	
 	# Having dealt with tied event-times, now define epsilon, which will be used 
 	# (a) in doSplitting, (b) for changing entry-times for non-subcohort cases, 
@@ -321,7 +331,7 @@ cchs <- function(formula, data=sys.parent(), inSubcohort, stratum,
 		# (verbose=TRUE produces a huge amount of output)
 	
 	#######################################################################
-	# Avoid R CMD check problem (http://stackoverflow.com/q/9439256/1310503):  
+	# Avoid R CMD check problem (https://stackoverflow.com/q/9439256/1310503):  
 	useForDfbeta <- NULL 
 
 	# Remake modelMatrix from modelMatrixPlus, by removing the extra columns, &
@@ -347,7 +357,7 @@ cchs <- function(formula, data=sys.parent(), inSubcohort, stratum,
 	# If coxph throws an error, append extra text and throw the error.
 	# If it throws a warning, append extra text and throw the warning, but still
 	# store the result of coxph in result. This code for intercepting errors 
-	# and warnings is based on http://stackoverflow.com/a/4952908/1310503.) 
+	# and warnings is based on https://stackoverflow.com/a/4952908/1310503.) 
 	if (annotateErrors) {
 		result <- withCallingHandlers(
 			tryCatch(
@@ -446,6 +456,13 @@ cchs <- function(formula, data=sys.parent(), inSubcohort, stratum,
 			if (!(varName %in% varsToKeep))
 				result[varName] <- NULL
 	
+	# Create and store adjustedTimes, if necessary.
+	if (returnAdjustedTimes) {
+		adjustedTimes <- unname(allExitTimes)
+		adjustedTimes[rowsToKeep] <- adjustedEntryAndExitTimes$timeAtExit
+		result$adjustedTimes <- adjustedTimes
+	}	
+	
 	# Set the S3 class of result to "cchs" and return it.
 	result <- setS3class(result, "cchs")  # works in S as well as R
 	return(result)
@@ -465,7 +482,7 @@ cchs <- function(formula, data=sys.parent(), inSubcohort, stratum,
 # manipulated and passed to coxph, it is cleaner and safer to use "na.pass" 
 # (which means don't drop the NA-containing rows) and then remove all the 
 # NA-containing rows from modelMatrix, inSubcohort, etc. in one fell swoop. 
-# The NA-containing rows are identified by rowsWithNA. 
+# The NA-containing rows are identified by rowsToDrop. 
 # 
 # There is an alternative way of dealing with NAs and which rows should be used.
 # Find which rows are dropped by coxph by including cluster(1:nrow(data)) in 
@@ -497,7 +514,7 @@ cchs <- function(formula, data=sys.parent(), inSubcohort, stratum,
 
 # 4. I think "a <- b; rm(b)" is the best way to have meaningful variable-names 
 # without wasting a lot of memory. See also 
-# http://stackoverflow.com/a/2717853/1310503, and search for "lazy evaluation" 
+# https://stackoverflow.com/a/2717853/1310503, and search for "lazy evaluation" 
 # in R Language Definition.
 
 # 5. Notes on the internal code in survival:::summary.coxph: se is calculated 

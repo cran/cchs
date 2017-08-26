@@ -8,10 +8,10 @@
 \usage{
 	cchs(formula, data=sys.parent(), inSubcohort, stratum, 
 		samplingFractions, cohortStratumSizes, precision=NULL, 
-		swap=TRUE, dropNeverAtRiskRows=TRUE, dropSubcohEventsDfbeta=FALSE, 
-		adjustSampFracIfAnyNAs=FALSE, keepAllCoxphElements=FALSE, 
-		confidenceLevel=0.95, verbose=FALSE, annotateErrors=TRUE, 
-		coxphControl, ...)
+		returnAdjustedTimes=FALSE, swap=TRUE, dropNeverAtRiskRows=TRUE, 
+		dropSubcohEventsDfbeta=FALSE, adjustSampFracIfAnyNAs=FALSE, 
+		keepAllCoxphElements=FALSE, confidenceLevel=0.95, verbose=FALSE, 
+		annotateErrors=TRUE, coxphControl, ...)
 }
 
 \arguments{
@@ -27,6 +27,8 @@
 
 	\item{precision}{ For example, if the times were recorded to the nearest day but are stored as numbers of years, then \code{precision} should be \code{1/365.25}. If there are no tied event-times, then it makes no difference what \code{precision} is. If there are tied event-times and \code{precision} is a number, then the tied event-times will be slightly changed before the estimator is calculated. If there are tied event-times and \code{precision} is \code{NULL} (meaning unspecified), then the estimator cannot be calculated and an error will be thrown. }
 	
+	\item{returnAdjustedTimes}{ If this is \code{TRUE}, the object returned by \code{cchs} will contain the exit-times after they have been adjusted to deal with any tied event-times. If a row is dropped because of missing data (\code{NA}s) then its exit-time is not adjusted. }
+
 	\item{swap}{ If this is \code{FALSE} then the swapping will be omitted (in the formula for Estimator III in Borgan et al 2000, the randomly selected observation/row will not be removed). This is only intended to be used for testing or development. }
 	
 	\item{dropNeverAtRiskRows}{ If this is \code{TRUE}, observations/rows whose at-risk periods do not include any of the event-times will be dropped just before \code{cchs} internally calls \code{\link{coxph}}. These observations/rows make no difference to the regression coefficients produced by \code{coxph}, but they do affect the dfbeta residuals (see Langholz & Jiao 2007) and therefore the variance-estimates, because \code{coxph} calculates the dfbeta residuals using an approximation. }  
@@ -86,11 +88,11 @@
 
 	\item{message}{ A message about observations that have been dropped because of NAs and event-times that have been changed to deal with ties, if either of these happened. }
 	
-	If \code{keepAllCoxphElements} is \code{TRUE}, then the \code{cchs} object will also contain the other elements listed under \code{\link{coxph.object}}. 
+	If \code{keepAllCoxphElements} is \code{TRUE}, then the \code{cchs} object will also contain the other elements listed under \code{\link{coxph.object}}. If \code{returnAdjustedTimes} is \code{TRUE}, then it will contain an \code{adjustedTimes} element, which is a vector of the adjusted exit-times (with elements in the same order as the observations/rows in the data). 
 }
 
 \references{
-	Borgan, Ø., Langholz, B., Samuelsen S.O., Goldstein, L., Pogoda, J. (2000). Exposure stratified case--cohort designs. \emph{Lifetime Data Analysis} \bold{6} (1), 39--58. \href{http://tinyurl.com/onc2ual}{link}  % The proper URL does not work with \href, because it contains a percent (and \% doesn't work either). Best solution: use tinyurl.com. Alternative: use \url, though that means the URL appears on the page. 
+	Borgan, Ø., Langholz, B., Samuelsen S.O., Goldstein, L., Pogoda, J. (2000). Exposure stratified case--cohort designs. \emph{Lifetime Data Analysis} \bold{6} (1), 39--58. \href{https://dx.doi.org/10.1023/A:1009661900674}{link} 
 	
 	Cologne, J., Preston, D.L., Imai, K., Misumi, M., Yoshida, K., Hayashi, T., Nakachi, K. (2012). Conventional case--cohort design and analysis for studies of interaction. \emph{International Journal of Epidemiology} \bold{41} (4), 1174--1186. \href{http://ije.oxfordjournals.org/content/41/4/1174.full}{link}
 
@@ -98,7 +100,7 @@
 }
 
 \seealso{
-	\code{\link{cch}}, which can calculate Estimators I and II from Borgan et al (2000), \code{\link{coxph}}, which \code{cchs} uses internally, and \code{\link{coxph.control}}, a container for certain parameters that are passed to \code{coxph}. These are all in the \href{http://CRAN.R-project.org/package=survival}{\pkg{survival}} package. 
+	\code{\link{cch}}, which can calculate Estimators I and II from Borgan et al (2000), \code{\link{coxph}}, which \code{cchs} uses internally, and \code{\link{coxph.control}}, a container for certain parameters that are passed to \code{coxph}. These are all in the \href{https://CRAN.R-project.org/package=survival}{\pkg{survival}} package. 
 	
 	\code{\link{cchsData}}, an example dataset that \code{cchs} can be used on. 
 }
@@ -113,11 +115,21 @@
 cchs(Surv(time, isCase) ~ stage + centralLabHistol + ageAtDiagnosis, 
       data=cchsData, inSubcohort=inSubcohort, stratum=localHistol, 
       samplingFractions=sampFrac, precision=1) 
-}
 
+# Do the same analysis using cohortStratumSizes instead of samplingFractions.
+# For the value of cohortStratumSizes see the Details section of ?cchsData. 
+# These two calls to cchs will give slightly different results unless set.seed  
+# is used with the same seed just before both of them.
+
+cchs(Surv(time, isCase) ~ stage + centralLabHistol + ageAtDiagnosis, 
+      data=cchsData, inSubcohort=inSubcohort, stratum=localHistol, 
+      cohortStratumSizes=c(favorable=3622, unfavorable=406), precision=1) 
 % Omitted: Fit the same model using coxph and the whole cohort:
 % coxph(Surv(edrel, rel) ~ stage + histol + age, data=nwtco)
+}
 
-% NOTES. In \link{coxph} etc. it is unnecessary to mention the survival package. See http://cran.r-project.org/doc/manuals/r-devel/R-exts.html#Cross_002dreferences. 
+
+
+% NOTES. In \link{coxph} etc. it is unnecessary to mention the survival package. See https://cran.r-project.org/doc/manuals/r-devel/R-exts.html#Cross_002dreferences. 
 
 

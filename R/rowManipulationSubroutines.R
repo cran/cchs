@@ -6,7 +6,7 @@
 # Subroutine to do the splitting. 
 
 doSplitting <- function(modelMatrixPlus, epsilon, verbose=FALSE) { 
-	# Avoid R CMD check problem (http://stackoverflow.com/q/9439256/1310503):  
+	# Avoid R CMD check problem (https://stackoverflow.com/q/9439256/1310503):  
 	stratum <- inSubcohort <- timeAtExit <- timeAtEntry <- NULL
 	
 	# Do some checking. 

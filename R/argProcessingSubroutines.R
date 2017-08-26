@@ -118,7 +118,7 @@ getExtraVariables <- function(data, originalCall, samplingFractions,
 # cursory checks, not thorough. 
 
 getCoxphControl <- function(coxphControl, ...) {
-	# Avoid R CMD check problem (http://stackoverflow.com/q/9439256/1310503):  
+	# Avoid R CMD check problem (https://stackoverflow.com/q/9439256/1310503):  
 	coxph.control <- survival::coxph.control
 	# Alternative ways that fail: coxph.control <- NULL causes errors below;
 	# utils::globalVariables(coxph.control) fails R CMD check

@@ -26,8 +26,8 @@ checkSamplingFractions <- function(samplingFractions, cohortStratumSizes,
 	if (!xor(sfGiven, cssGiven)) 
 		stop("exactly one of samplingFractions and cohortStratumSizes must ", 
 				"be supplied") 
-	argName <- ifelse(sfGiven, "samplingFractions", "cohortStratumSizes")
-	arg <- get(argName)  # "arg <- ifelse(sfGiven, ..." does not work	
+	argName <- { if (sfGiven) "samplingFractions" else "cohortStratumSizes" }
+	arg <- get(argName)  # "arg <- ifelse(sfGiven, ..." does not work
 	
 	# Check that arg is legal. 
 	# If arg has no names, then it has to have length nObservations, and arg  
@@ -36,12 +36,16 @@ checkSamplingFractions <- function(samplingFractions, cohortStratumSizes,
 	# arg is "short"; and arg is only allowed to have NAs in unused elements,  
 	# meaning ones whose names do not appear in levels(stratum). 
 	
+	# Check that arg is a numeric vector.
+	if (!is.vector(arg) || !is.numeric(arg)) 
+		stop(argName, " must be a numeric vector")
+	
 	# First, make an error message to use when arg has an illegal form. 
 	if (is.null(names(arg))) {
 		namesArgText <- "NULL"
 	} else {
 		namesArgText <- paste(paste(names(arg)[1:min(6,length(arg))], 
-						collapse=" "),	if(length(arg)>6) "...")
+						collapse=" "), { if (length(arg) > 6) "..." })
 	}
 	levelsStratumText <- paste(paste(levels(stratum)[1:min(6,nStrata)], 
 					collapse=" "), if(nStrata>6) "...")
