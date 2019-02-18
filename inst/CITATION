@@ -1,0 +1,15 @@
+bibentry(bibtype = "article",
+title = "{cchs}: {A}n {R} Package for Stratified Case-Cohort Studies",
+author = person("E.", "Jones"),
+year = 2018,
+journal = "R Journal",
+volume = 10,
+number = 1,
+pages = "484--494",
+url = "https://doi.org/10.32614/RJ-2018-012",
+header = "To cite cchs in publications use:",
+textVersion = paste("E. Jones (2018),",
+"cchs: An R Package for Stratified Case-Cohort Studies,",
+"R Journal, 10(1), 484-494.\n",
+"https://doi.org/10.32614/RJ-2018-012")
+)

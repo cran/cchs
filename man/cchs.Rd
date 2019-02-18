@@ -92,15 +92,15 @@
 }
 
 \references{
-	Borgan, Ø., Langholz, B., Samuelsen S.O., Goldstein, L., Pogoda, J. (2000). Exposure stratified case--cohort designs. \emph{Lifetime Data Analysis} \bold{6} (1), 39--58. \href{https://dx.doi.org/10.1023/A:1009661900674}{link} 
+	Borgan, Ø., Langholz, B., Samuelsen S.O., Goldstein, L., Pogoda, J. (2000). Exposure stratified case--cohort designs. \emph{Lifetime Data Analysis} \bold{6} (1), 39--58. \href{https://doi.org/10.1023/A:1009661900674}{(link)} 
 	
-	Cologne, J., Preston, D.L., Imai, K., Misumi, M., Yoshida, K., Hayashi, T., Nakachi, K. (2012). Conventional case--cohort design and analysis for studies of interaction. \emph{International Journal of Epidemiology} \bold{41} (4), 1174--1186. \href{http://ije.oxfordjournals.org/content/41/4/1174.full}{link}
+	Cologne, J., Preston, D.L., Imai, K., Misumi, M., Yoshida, K., Hayashi, T., Nakachi, K. (2012). Conventional case--cohort design and analysis for studies of interaction. \emph{International Journal of Epidemiology} \bold{41} (4), 1174--1186. \href{https://doi.org/10.1093/ije/dys102}{(link)}
 
-	Langholz, B., Jiao, J. (2007). Computational methods for case--cohort studies. \emph{Computational Statistics and Data Analysis} \bold{51} (8), 3737--3748. \href{http://www.sciencedirect.com/science/article/pii/S0167947306005068}{link}
+	Langholz, B., Jiao, J. (2007). Computational methods for case--cohort studies. \emph{Computational Statistics and Data Analysis} \bold{51} (8), 3737--3748. \href{https://doi.org/10.1016/j.csda.2006.12.028}{(link)}
 }
 
 \seealso{
-	\code{\link{cch}}, which can calculate Estimators I and II from Borgan et al (2000), \code{\link{coxph}}, which \code{cchs} uses internally, and \code{\link{coxph.control}}, a container for certain parameters that are passed to \code{coxph}. These are all in the \href{https://CRAN.R-project.org/package=survival}{\pkg{survival}} package. 
+	\code{\link{cch}}, which can calculate Estimators I and II from Borgan et al (2000), \code{\link{coxph}}, which \code{cchs} uses internally, and \code{\link{coxph.control}}, a container for certain parameters that are passed to \code{coxph}. These are all in the \href{https://cran.r-project.org/package=survival}{\pkg{survival}} package. 
 	
 	\code{\link{cchsData}}, an example dataset that \code{cchs} can be used on. 
 }

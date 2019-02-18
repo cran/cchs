@@ -331,7 +331,7 @@ cchs <- function(formula, data=sys.parent(), inSubcohort, stratum,
 		# (verbose=TRUE produces a huge amount of output)
 	
 	#######################################################################
-	# Avoid R CMD check problem (https://stackoverflow.com/q/9439256/1310503):  
+	# Avoid R CMD check problem (https://stackoverflow.com/q/9439256):  
 	useForDfbeta <- NULL 
 
 	# Remake modelMatrix from modelMatrixPlus, by removing the extra columns, &
@@ -357,7 +357,7 @@ cchs <- function(formula, data=sys.parent(), inSubcohort, stratum,
 	# If coxph throws an error, append extra text and throw the error.
 	# If it throws a warning, append extra text and throw the warning, but still
 	# store the result of coxph in result. This code for intercepting errors 
-	# and warnings is based on https://stackoverflow.com/a/4952908/1310503.) 
+	# and warnings is based on https://stackoverflow.com/a/4952908.) 
 	if (annotateErrors) {
 		result <- withCallingHandlers(
 			tryCatch(
@@ -514,7 +514,7 @@ cchs <- function(formula, data=sys.parent(), inSubcohort, stratum,
 
 # 4. I think "a <- b; rm(b)" is the best way to have meaningful variable-names 
 # without wasting a lot of memory. See also 
-# https://stackoverflow.com/a/2717853/1310503, and search for "lazy evaluation" 
+# https://stackoverflow.com/a/2717853, and search for "lazy evaluation" 
 # in R Language Definition.
 
 # 5. Notes on the internal code in survival:::summary.coxph: se is calculated 
