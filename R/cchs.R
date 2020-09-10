@@ -35,7 +35,7 @@
 ################################################################################
 # Main function to calculate Borgan's Estimator III. 
 
-cchs <- function(formula, data=sys.parent(), inSubcohort, stratum, 
+cchs <- function(formula, data=parent.frame(), inSubcohort, stratum, 
 			samplingFractions, cohortStratumSizes, precision=NULL, 
 			returnAdjustedTimes=FALSE,
 			swap=TRUE, dropNeverAtRiskRows=TRUE, dropSubcohEventsDfbeta=FALSE, 

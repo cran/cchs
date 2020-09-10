@@ -6,7 +6,7 @@
 	\code{cchs} fits a Cox proportional-hazards regression model to case-cohort data where the subcohort was selected by stratified simple random sampling. It uses Estimator III of Borgan et al (2000). }
 
 \usage{
-	cchs(formula, data=sys.parent(), inSubcohort, stratum, 
+	cchs(formula, data=parent.frame(), inSubcohort, stratum, 
 		samplingFractions, cohortStratumSizes, precision=NULL, 
 		returnAdjustedTimes=FALSE, swap=TRUE, dropNeverAtRiskRows=TRUE, 
 		dropSubcohEventsDfbeta=FALSE, adjustSampFracIfAnyNAs=FALSE, 
@@ -57,6 +57,8 @@
 
 	\code{cchs} does not normally give replicable results, because the swapping and the small changes to tied event-times are random (see \code{swap} and \code{precision} in the Arguments section). To get exactly the same results every time, use \code{\link{set.seed}} with a fixed seed just before calling \code{cchs}. 
 
+	For more information about \code{cchs} see the article in \emph{R Journal}, Jones (2018). 
+
 % PREVIOUS VERSION OF ONE PARAGRAPH (NA is prohibited): For normal use, the logical (boolean) arguments should have their default values. \code{NA}s are not allowed in the data, \code{inSubcohort}, \code{stratum}, \code{samplingFractions}, or \code{cohortStratumSizes}. (However, if \code{samplingFractions} or \code{cohortStratumSizes} have names, and any of those names are not equal to values of \code{stratum}, then the corresponding elements can be \code{NA}.)  
 % To get bullet-list, use \itemize{ \item abc \item def }, but this does not look good. 
 }
@@ -95,6 +97,8 @@
 	Borgan, Ø., Langholz, B., Samuelsen S.O., Goldstein, L., Pogoda, J. (2000). Exposure stratified case--cohort designs. \emph{Lifetime Data Analysis} \bold{6} (1), 39--58. \href{https://doi.org/10.1023/A:1009661900674}{(link)} 
 	
 	Cologne, J., Preston, D.L., Imai, K., Misumi, M., Yoshida, K., Hayashi, T., Nakachi, K. (2012). Conventional case--cohort design and analysis for studies of interaction. \emph{International Journal of Epidemiology} \bold{41} (4), 1174--1186. \href{https://doi.org/10.1093/ije/dys102}{(link)}
+	
+	Jones, E. (2018). cchs: An R package for stratified case--cohort studies. \emph{R Journal} \bold{10} (1), 484--494. \href{https://doi.org/10.32614/RJ-2018-012}{(link)}
 
 	Langholz, B., Jiao, J. (2007). Computational methods for case--cohort studies. \emph{Computational Statistics and Data Analysis} \bold{51} (8), 3737--3748. \href{https://doi.org/10.1016/j.csda.2006.12.028}{(link)}
 }
