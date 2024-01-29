@@ -24,7 +24,7 @@ checkCchsArgumentsNotMissing <- function(formula, inSubcohort, stratum) {
 checkCchsArguments <- function(formula, data, inSubcohort, stratum, 
 		confidenceLevel) {
 	# Check formula is a formula. 
-	if (class(formula) != "formula")
+	if (!inherits(formula, "formula"))
 		stop("formula has to be an object of class formula")
 	
 	# Check data is not an empty data-frame. 

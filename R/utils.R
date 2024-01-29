@@ -44,5 +44,10 @@ setS3class <- function(x, className) {
 	}  
 	return(x)
 }
+
+# is.R is being deprecated in R 4.4.0, so copy it here:
+is.R <- function() {
+	exists("version") && !is.null(vl <- version$language) && vl == "R"
+}
 ################################################################################
 

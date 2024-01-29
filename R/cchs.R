@@ -31,6 +31,7 @@
 #      hasUnusedLevels
 #      removeNAsFromVector
 #      setS3class
+#      is.R
 
 ################################################################################
 # Main function to calculate Borgan's Estimator III. 

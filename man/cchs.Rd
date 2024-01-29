@@ -94,13 +94,13 @@
 }
 
 \references{
-	Borgan, Ø., Langholz, B., Samuelsen S.O., Goldstein, L., Pogoda, J. (2000). Exposure stratified case--cohort designs. \emph{Lifetime Data Analysis} \bold{6} (1), 39--58. \href{https://doi.org/10.1023/A:1009661900674}{(link)} 
+	Borgan, Ø., Langholz, B., Samuelsen S.O., Goldstein, L., Pogoda, J. (2000). Exposure stratified case--cohort designs. \emph{Lifetime Data Analysis} \bold{6} (1), 39--58. \doi{10.1023/A:1009661900674} 
 	
-	Cologne, J., Preston, D.L., Imai, K., Misumi, M., Yoshida, K., Hayashi, T., Nakachi, K. (2012). Conventional case--cohort design and analysis for studies of interaction. \emph{International Journal of Epidemiology} \bold{41} (4), 1174--1186. \href{https://doi.org/10.1093/ije/dys102}{(link)}
+	Cologne, J., Preston, D.L., Imai, K., Misumi, M., Yoshida, K., Hayashi, T., Nakachi, K. (2012). Conventional case--cohort design and analysis for studies of interaction. \emph{International Journal of Epidemiology} \bold{41} (4), 1174--1186. \doi{10.1093/ije/dys102}
 	
-	Jones, E. (2018). cchs: An R package for stratified case--cohort studies. \emph{R Journal} \bold{10} (1), 484--494. \href{https://doi.org/10.32614/RJ-2018-012}{(link)}
+	Jones, E. (2018). cchs: An R package for stratified case--cohort studies. \emph{R Journal} \bold{10} (1), 484--494. \doi{10.32614/RJ-2018-012}
 
-	Langholz, B., Jiao, J. (2007). Computational methods for case--cohort studies. \emph{Computational Statistics and Data Analysis} \bold{51} (8), 3737--3748. \href{https://doi.org/10.1016/j.csda.2006.12.028}{(link)}
+	Langholz, B., Jiao, J. (2007). Computational methods for case--cohort studies. \emph{Computational Statistics and Data Analysis} \bold{51} (8), 3737--3748. \doi{10.1016/j.csda.2006.12.028}
 }
 
 \seealso{
