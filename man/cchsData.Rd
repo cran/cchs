@@ -79,10 +79,12 @@ cchsData$sampFrac <-
 }}
 
 \references{
-	Breslow, N.E., Chatterjee, N. (1999). Design and analysis of two-phase studies with binary outcome applied to Wilms tumour prognosis. \emph{Journal of the Royal Statistical Society: Series C (Applied Statistics)} \bold{48} (4), 457--468. \doi{10.1111/1467-9876.00165} 
+
+	Note: doi links are shown where these pass CRAN checks and appear correctly in the PDF reference manual. In other cases, URLs are shown. 
+
+	Breslow, N.E., Chatterjee, N. (1999). Design and analysis of two-phase studies with binary outcome applied to Wilms tumour prognosis. \emph{Journal of the Royal Statistical Society: Series C (Applied Statistics)} \bold{48} (4), 457--468. https://doi.org/10.1111/1467-9876.00165
 	
-	D'Angio, G.J., Breslow, N., Beckwith, J.B., Evans, A., Baum, E., Delorimier, A., Fernbach, D., Hrabovsky, E., Jones, B., Kelalis, P., Othersen, H.B., Tefft, M., Thomas, P.R.M. (1989). Treatment of Wilms' tumor: Results of the third national Wilms' tumor study. \emph{Cancer} \bold{64} (2), 349--360. https://doi.org/10.1002/1097-0142(19890715)64:2%3C349::AID-CNCR2820640202%3E3.0.CO;2-Q (this paper's DOI contains unusual characters so cannot be shown like the others here)
-	% For CRAN, it does not seem to be possible to make a proper link to this paper appear in this documentation file. For example, if \doi{...} is used, R CMD build does not work. 
+	D'Angio, G.J., Breslow, N., Beckwith, J.B., Evans, A., Baum, E., Delorimier, A., Fernbach, D., Hrabovsky, E., Jones, B., Kelalis, P., Othersen, H.B., Tefft, M., Thomas, P.R.M. (1989). Treatment of Wilms' tumor: Results of the third National Wilms' Tumor Study. \emph{Cancer} \bold{64} (2), 349--360. https://doi.org/bc95fv
 	
 	Green, D.M., Breslow, N.E., Beckwith, J.B., Finklestein, J.Z., Grundy, P.E., Thomas, P.R., Kim, T., Shochat, S.J., Haase, G.M., Ritchey, M.L., Kelalis, P.P., D'Angio, G.J. (1998). Comparison between single-dose and divided-dose administration of dactinomycin and doxorubicin for patients with Wilms' tumor: a report from the National Wilms' Tumor Study Group. \emph{Journal of Clinical Oncology} \bold{16} (1), 237--245. \doi{10.1200/JCO.1998.16.1.237} 
 }
