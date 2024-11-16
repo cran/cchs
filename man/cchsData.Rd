@@ -4,7 +4,7 @@
 \title{Data from a case--cohort study with stratified subcohort-selection}
 
 \description{
-	A case--cohort dataset where the subcohort was selected by stratified simple random sampling. This is an artificial dataset that was made from \code{\link{nwtco}}, a real dataset from the National Wilms Tumor Study (NWTS). It is designed for demonstrating the use of \code{\link{cchs}}. 
+	A case--cohort dataset where the subcohort was selected by stratified simple random sampling. This is an artificial dataset that was made from \code{\link[survival]{nwtco}}, a real dataset from the National Wilms Tumor Study (NWTS). It is designed for demonstrating the use of \code{\link{cchs}}. 
 }
 
 \format{
@@ -22,11 +22,11 @@
   }
 }
 \details{
-	The \code{\link{nwtco}} data is from two clinical trials but can be regarded as cohort data. \code{cchsData} can be created from it by running the code in the Source section below, which is partly based on the Examples section of the \code{\link{cch}} documentation. 
+	The \code{\link[survival]{nwtco}} data is from two clinical trials but can be regarded as cohort data. \code{cchsData} can be created from it by running the code in the Source section below, which is partly based on the Examples section of the \code{\link[survival]{cch}} documentation. 
 	
 	Two strata are used for the subcohort-selection, corresponding to the two values of \code{localHistol}. The sampling fraction is 5\% for the stratum defined by \code{localHistol="favorable"} and 20\% for the stratum defined by \code{localHistol="unfavorable"}. After the subcohort is selected, the sampling fractions are recalculated using the exact integer numbers of participants in the subcohort and the full cohort, and then stored in the data-frame.
 	
-	As an alternative to the sampling fractions, the stratum sizes in the full cohort could be used. A suitable value for the \code{cohortStratumSizes} argument to \code{\link{cchs}} would be \code{c(favorable=3622,} \code{unfavorable=406)}. This can be worked out by entering \code{table(nwtco$instit, useNA="always")} and noting that for \code{nwtco$instit} and \code{nwtco$histol}, a value of \code{1} means ``favorable histology result'' and \code{2} means ``unfavorable''---this is not stated in the \code{\link{nwtco}} documentation but can be deduced from the line in the \code{\link{cch}} examples that contains \code{labels=c("FH","UH")}, or by comparing the output of the \code{table} command with the numbers in Table 1 of Breslow & Chatterjee (1999).
+	As an alternative to the sampling fractions, the stratum sizes in the full cohort could be used. A suitable value for the \code{cohortStratumSizes} argument to \code{\link{cchs}} would be \code{c(favorable=3622,} \code{unfavorable=406)}. This can be worked out by entering \code{table(nwtco$instit, useNA="always")} and noting that for \code{nwtco$instit} and \code{nwtco$histol}, a value of \code{1} means ``favorable histology result'' and \code{2} means ``unfavorable''---this is not stated in the \code{\link[survival]{nwtco}} documentation but can be deduced from the line in the \code{\link[survival]{cch}} examples that contains \code{labels=c("FH","UH")}, or by comparing the output of the \code{table} command with the numbers in Table 1 of Breslow & Chatterjee (1999).
 	
 	For information about the two clinical trials, NWTS-3 and NWTS-4, see D'Angio et al. (1989) and Green et al. (1998) respectively, or the \href{https://web.archive.org/web/20211021054158/http://www.nwtsg.org/}{National Wilms Tumor Study website (archived copy)}. 
 }

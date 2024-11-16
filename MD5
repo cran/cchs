@@ -1,4 +1,4 @@
-5483426714347f44933239b9325fe9cd *DESCRIPTION
+233bb1f01833becf455cd5f9f6bd7b23 *DESCRIPTION
 f948215ba8565f645c42a364d4b9838b *NAMESPACE
 df32149b8205eb3996d38439a368efca *R/argProcessingSubroutines.R
 8df6cb0f3f7ac159627537d4552ec20f *R/cchs-class.R
@@ -7,8 +7,8 @@ f9bd25ec6f1bd906ddaf1f2d2256159e *R/rowManipulationSubroutines.R
 18821eb038dba44c76ff6bdf576bddde *R/samplingFractionSubroutines.R
 7041cbf9d06a66b2d45518b63388db84 *R/tiedEventTimeSubroutines.R
 ed14baa21e41ded20ec9249c8b7ff36b *R/utils.R
-06ca5173bbe36c81786718ec0d48b2b9 *build/partial.rdb
+0a7f6b3f3fda1839ebcb2047f8e526f9 *build/partial.rdb
 7c89905119e6bfa8b52420e46359262e *data/cchsData.rda
 5e12f481f0ce9b6cc53a871024818e61 *inst/CITATION
-de77f230d401ef203812c1342ed42f82 *man/cchs.Rd
-9b0a0f4d6c02c4e325063402ad789fe9 *man/cchsData.Rd
+c101c2261c030f6a18689aea7e20524d *man/cchs.Rd
+f0ce42e7dae3bd38a492dd225cb419ee *man/cchsData.Rd
